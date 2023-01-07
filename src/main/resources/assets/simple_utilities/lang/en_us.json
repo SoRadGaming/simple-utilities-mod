@@ -11,7 +11,7 @@
   "text.hud.simple_utilities.sprinting": "Sprinting",
   "text.autoconfig.simple_utilities.title": "Simple HUD Utilities Settings",
   "text.autoconfig.simple_utilities.option.statusElements": "HUD Elements",
-  "text.autoconfig.simple_utilities.option.statusElements.toggleSimpleUtilitiesHUD": "Show HUD",
+  "text.autoconfig.simple_utilities.option.uiConfig.toggleSimpleUtilitiesHUD": "Show HUD",
   "text.autoconfig.simple_utilities.option.statusElements.toggleCoordinatesStatus": "Coordinates Status",
   "text.autoconfig.simple_utilities.option.statusElements.toggleDirectionStatus": "Direction Status",
   "text.autoconfig.simple_utilities.option.statusElements.toggleEquipmentStatus": "Armour and Hand Status",
@@ -25,5 +25,5 @@
   "text.autoconfig.simple_utilities.option.statusElements.togglePlayerName": "Player Name",
   "text.autoconfig.simple_utilities.option.statusElements.toggleServerName": "Server Name",
   "text.autoconfig.simple_utilities.option.statusElements.toggleServerAddress": "Server Address",
-  "text.autoconfig.simple_utilities.option.statusElements.textColor": "Text Color"
+  "text.autoconfig.simple_utilities.option.uiConfig.textColor": "Text Color"
 }

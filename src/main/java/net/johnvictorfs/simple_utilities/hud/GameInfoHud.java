@@ -54,7 +54,7 @@ public class GameInfoHud {
     }
 
     public void draw(MatrixStack matrixStack) {
-        if (!config.statusElements.toggleSimpleUtilitiesHUD) return;
+        if (!config.uiConfig.toggleSimpleUtilitiesHUD) return;
 
         this.player = this.client.player;
 
@@ -76,12 +76,27 @@ public class GameInfoHud {
         }
 
         int lineHeight = this.fontRenderer.fontHeight + 2;
-        int top = 0;
-        int left = 4;
+        int screenHeight = this.client.getWindow().getScaledHeight();
+        int screenWidth = this.client.getWindow().getScaledWidth();
+        int YScreenPosition = (screenHeight - ((lineHeight + 4) * gameInfo.size())) + (lineHeight + 4);
+        int XScreenPosition = screenWidth - 8;
+        int configYPosition = config.uiConfig.Ycords;
+        int configXPosition = config.uiConfig.Xcords;
+        int yAxis = YScreenPosition * configYPosition / 100;
+        int xAxis = XScreenPosition * configXPosition / 100;
+
+        // Add Padding to left and right of the screen
+        if (xAxis <= 4) {
+            xAxis = 4;
+        } else if (xAxis >= screenWidth - 4) {
+            xAxis = screenWidth - 4;
+        }
+
+        boolean rightToLeft = configXPosition < 50;
 
         for (String line : gameInfo) {
-            this.fontRenderer.drawWithShadow(this.matrixStack, line, left, top + 4, config.statusElements.textColor);
-            top += lineHeight;
+            this.fontRenderer.drawWithShadow(this.matrixStack, line, xAxis, yAxis + 4, config.uiConfig.textColor, rightToLeft);
+            yAxis += lineHeight;
         }
 
         if (config.statusElements.toggleSprintStatus && (this.client.options.sprintKey.isPressed() || this.player.isSprinting())) {
@@ -98,7 +113,7 @@ public class GameInfoHud {
         int sprintingTop = scaleHeight - maxLineHeight;
 
         // Sprinting Info
-        this.fontRenderer.drawWithShadow(this.matrixStack, sprintingText, 2, sprintingTop + 20, config.statusElements.textColor);
+        this.fontRenderer.drawWithShadow(this.matrixStack, sprintingText, 2, sprintingTop + 20, config.uiConfig.textColor);
     }
 
     private static String capitalize(String str) {
@@ -193,7 +208,7 @@ public class GameInfoHud {
                 String itemDurability = currentDurability + "/" + equippedItem.getMaxDamage();
 
                 // Default Durability Color
-                int color = config.statusElements.textColor;
+                int color = config.uiConfig.textColor;
 
                 if (currentDurability < equippedItem.getMaxDamage()) {
                     // Start as Green if item has lost at least 1 durability
@@ -216,7 +231,7 @@ public class GameInfoHud {
 
                 if (inventoryCount > 1) {
                     String itemCount = count + " (" + inventoryCount + ")";
-                    this.fontRenderer.drawWithShadow(this.matrixStack, itemCount, 22, itemTop - 64, config.statusElements.textColor);
+                    this.fontRenderer.drawWithShadow(this.matrixStack, itemCount, 22, itemTop - 64, config.uiConfig.textColor);
                 }
             }
 
@@ -315,7 +330,7 @@ public class GameInfoHud {
             }
         }
 
-        // 追加分
+        // Additions
 
         if (config.statusElements.togglePlayerName) {
             gameInfo.add(player.getEntityName());
