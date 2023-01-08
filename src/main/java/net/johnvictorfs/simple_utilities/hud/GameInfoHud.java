@@ -75,7 +75,6 @@ public class GameInfoHud {
             drawEquipmentInfo();
         }
 
-
         // Get the longest string in the array
         int longestString = 0;
         int BoxWidth = 0;
@@ -225,6 +224,8 @@ public class GameInfoHud {
         int itemTop = this.client.getWindow().getScaledHeight() - maxLineHeight;
 
         int lineHeight = this.fontRenderer.fontHeight + 6;
+        int configX = config.uiConfig.equipmentLocationX;
+        int configY = config.uiConfig.equipmentLocationY;
 
         // Draw in order Helmet -> Chestplate -> Leggings -> Boots
         for (ItemStack equippedItem : Lists.reverse(equippedItems)) {
@@ -233,6 +234,7 @@ public class GameInfoHud {
                 continue;
             }
 
+            // Icon Render?
             this.itemRenderer.renderInGuiWithOverrides(equippedItem, 2, itemTop - 68);
 
             if (equippedItem.getMaxDamage() != 0) {
