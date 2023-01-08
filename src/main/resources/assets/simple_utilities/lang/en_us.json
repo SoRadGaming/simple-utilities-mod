@@ -45,8 +45,14 @@
   "text.autoconfig.simple_utilities.option.statusElements.Xcords": "X Coordinates of HUD Element",
   "text.autoconfig.simple_utilities.option.statusElements.Ycords.@Tooltip": "The Y position of the HUD (0 is the top of the screen)",
   "text.autoconfig.simple_utilities.option.statusElements.Ycords": "Y Coordinates of HUD Element",
-  "text.autoconfig.simple_utilities.option.uiConfig.equipmentLocation.@Tooltip": "The location of the equipment HUD (Bottom Left, Bottom Right, Top Left, Top Right)",
   "text.autoconfig.simple_utilities.option.uiConfig.equipmentLocation": "Equipment Location",
-  "text.autoconfig.simple_utilities.option.uiConfig.sprintStatusLocation.@Tooltip": "The location of the sprinting HUD (Bottom Left, Bottom Right, Top Left, Top Right)",
-  "text.autoconfig.simple_utilities.option.uiConfig.sprintStatusLocation": "Sprint Status Location"
+  "text.autoconfig.simple_utilities.option.uiConfig.equipmentLocationX.@Tooltip": "The X position of the equipment HUD (0 is the left side of the screen)",
+  "text.autoconfig.simple_utilities.option.uiConfig.equipmentLocationX": "X Coordinates of HUD Element",
+  "text.autoconfig.simple_utilities.option.uiConfig.equipmentLocationY.@Tooltip": "The Y position of the equipment HUD (0 is the top of the screen)",
+  "text.autoconfig.simple_utilities.option.uiConfig.equipmentLocationY": "Y Coordinates of HUD Element",
+  "text.autoconfig.simple_utilities.option.uiConfig.sprintStatusLocation": "Sprint Status Location",
+  "text.autoconfig.simple_utilities.option.uiConfig.sprintStatusLocationX.@Tooltip": "The X position of the Sprint Status (0 is the left side of the screen)",
+  "text.autoconfig.simple_utilities.option.uiConfig.sprintStatusLocationX": "X Coordinates of HUD Element",
+  "text.autoconfig.simple_utilities.option.uiConfig.sprintStatusLocationY.@Tooltip": "The Y position of the Sprint Status (0 is the top of the screen)",
+  "text.autoconfig.simple_utilities.option.uiConfig.sprintStatusLocationY": "Y Coordinates of HUD Element"
 }
