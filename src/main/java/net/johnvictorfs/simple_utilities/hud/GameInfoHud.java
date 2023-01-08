@@ -125,21 +125,17 @@ public class GameInfoHud {
     private void drawSprintingInfo() {
         final String sprintingText = (Text.translatable("text.hud.simple_utilities.sprinting")).getString();
 
-        int lineHeight = this.fontRenderer.fontHeight + 2;
-        int screenHeight = this.client.getWindow().getScaledHeight();
-        int screenWidth = this.client.getWindow().getScaledWidth();
-        int YScreenPosition = (screenHeight - lineHeight) - 4;
-        int XScreenPosition = (screenWidth - this.fontRenderer.getWidth(sprintingText)) - 8;
-        int configYPosition = config.uiConfig.sprintStatusLocationY;
-        int configXPosition = config.uiConfig.sprintStatusLocationX;
-        int yAxis = (YScreenPosition * configYPosition / 100) + 4;
-        int xAxis = XScreenPosition * configXPosition / 100;
+        int yAxis = (((this.client.getWindow().getScaledHeight() - this.fontRenderer.fontHeight + 2) - 4) * (config.uiConfig.sprintStatusLocationY) / 100);
+        int xAxis = (((this.client.getWindow().getScaledWidth() - this.fontRenderer.getWidth(sprintingText)) - 8) * (config.uiConfig.sprintStatusLocationX) / 100);
 
-        // Add Padding to left and right of the screen
+        // Add Padding to left of the screen
         if (xAxis <= 4) {
             xAxis = 4;
-        } else if (xAxis >= screenWidth - 4) {
-            xAxis = screenWidth - 4;
+        }
+
+        // Add Padding to top of the screen
+        if (yAxis <= 4) {
+            yAxis = 4;
         }
 
         // Sprinting Info
@@ -271,11 +267,13 @@ public class GameInfoHud {
                     color = Colors.lightRed;
                 }
 
+                // Draw Durability
                 this.fontRenderer.drawWithShadow(this.matrixStack, itemDurability, 22, itemTop - 64, color);
             } else {
                 int inventoryCount = inventory.count(equippedItem.getItem());
                 int count = equippedItem.getCount();
 
+                // Icon
                 if (inventoryCount > 1) {
                     String itemCount = count + " (" + inventoryCount + ")";
                     this.fontRenderer.drawWithShadow(this.matrixStack, itemCount, 22, itemTop - 64, config.uiConfig.textColor);
