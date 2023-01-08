@@ -85,35 +85,25 @@ public class GameInfoHud {
                 BoxWidth = this.fontRenderer.getWidth(s);
             }
         }
-        // Now we have the box width
 
         int lineHeight = this.fontRenderer.fontHeight + 2;
-        int screenHeight = this.client.getWindow().getScaledHeight();
-        int screenWidth = this.client.getWindow().getScaledWidth();
-        int YScreenPosition = (screenHeight - ((lineHeight + 4) * gameInfo.size())) + (lineHeight + 4);
-        int XScreenPosition = (screenWidth - 8) - (BoxWidth); // To correct padding
-        int configYPosition = config.statusElements.Ycords;
         int configXPosition = config.statusElements.Xcords;
-        int yAxis = YScreenPosition * configYPosition / 100;
-        int xAxis = XScreenPosition * configXPosition / 100;
+        int yAxis = (((this.client.getWindow().getScaledHeight()) - ((lineHeight + 4) * gameInfo.size())) + (lineHeight + 4)) * (config.statusElements.Ycords) / 100;
+        int xAxis = (((this.client.getWindow().getScaledWidth() - 4) - 4) - (BoxWidth)) * configXPosition / 100;
 
-        // Add Padding to left and right of the screen
+        // Add Padding to left of the screen
         if (xAxis <= 4) {
             xAxis = 4;
-        } else if (xAxis >= screenWidth - 4) {
-            xAxis = screenWidth - 4;
         }
 
-        // It equals 4, so there will be an offset of the hud
-        int spaceLength = this.fontRenderer.getWidth(" ");
-
         for (String line : gameInfo) {
+            int offset = 0;
             if (configXPosition >= 50) {
                 int lineLength = this.fontRenderer.getWidth(line);
-                line = " ".repeat((BoxWidth - lineLength) / spaceLength) + line;
+                offset = (BoxWidth - lineLength);
             }
 
-            this.fontRenderer.drawWithShadow(this.matrixStack, line, xAxis, yAxis + 4, config.uiConfig.textColor);
+            this.fontRenderer.drawWithShadow(this.matrixStack, line, xAxis + offset, yAxis + 4, config.uiConfig.textColor);
             yAxis += lineHeight;
         }
 
