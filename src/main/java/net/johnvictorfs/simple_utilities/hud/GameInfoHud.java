@@ -75,11 +75,23 @@ public class GameInfoHud {
             drawEquipmentInfo();
         }
 
+
+        // Get the longest string in the array
+        int longestString = 0;
+        int BoxWidth = 0;
+        for (String s : gameInfo) {
+            if (s.length() > longestString) {
+                longestString = s.length();
+                BoxWidth = this.fontRenderer.getWidth(s);
+            }
+        }
+        // Now we have the box width
+
         int lineHeight = this.fontRenderer.fontHeight + 2;
         int screenHeight = this.client.getWindow().getScaledHeight();
         int screenWidth = this.client.getWindow().getScaledWidth();
         int YScreenPosition = (screenHeight - ((lineHeight + 4) * gameInfo.size())) + (lineHeight + 4);
-        int XScreenPosition = screenWidth - 8; // To correct padding
+        int XScreenPosition = (screenWidth - 8) - (BoxWidth); // To correct padding
         int configYPosition = config.statusElements.Ycords;
         int configXPosition = config.statusElements.Xcords;
         int yAxis = YScreenPosition * configYPosition / 100;
@@ -92,11 +104,17 @@ public class GameInfoHud {
             xAxis = screenWidth - 4;
         }
 
-        // TODO resolve the fact this shit dont work
-        boolean rightToLeft = configXPosition >= 50;
+        // It equals 4, so there will be an offset of the hud
+        int spaceLength = this.fontRenderer.getWidth(" ");
+        gameInfo.add(0, "Space Length: " + spaceLength);
 
         for (String line : gameInfo) {
-            this.fontRenderer.drawWithShadow(this.matrixStack, line, xAxis, yAxis + 4, config.uiConfig.textColor, rightToLeft);
+            if (configXPosition >= 50) {
+                int lineLength = this.fontRenderer.getWidth(line);
+                line = " ".repeat((BoxWidth - lineLength) / spaceLength) + line;
+            }
+
+            this.fontRenderer.drawWithShadow(this.matrixStack, line, xAxis, yAxis + 4, config.uiConfig.textColor);
             yAxis += lineHeight;
         }
 
@@ -108,7 +126,9 @@ public class GameInfoHud {
     private void drawSprintingInfo() {
         final String sprintingText = (Text.translatable("text.hud.simple_utilities.sprinting")).getString();
 
+        // TODO implement config for this
         SimpleUtilitiesConfig.StatusLocation statusLocation = config.uiConfig.sprintStatusLocation;
+
         int maxLineHeight = Math.max(10, this.fontRenderer.getWidth(sprintingText));
         maxLineHeight = (int) (Math.ceil(maxLineHeight / 5.0D + 0.5D) * 5);
         int scaleHeight = this.client.getWindow().getScaledHeight();
@@ -175,6 +195,9 @@ public class GameInfoHud {
         List<ItemStack> equippedItems = new ArrayList<>();
         PlayerInventory inventory = this.player.getInventory();
         int maxLineHeight = Math.max(10, this.fontRenderer.getWidth(""));
+
+        // TODO implement config for this
+        SimpleUtilitiesConfig.StatusLocation equipmentLocation = config.uiConfig.equipmentLocation;
 
         ItemStack mainHandItem = inventory.getMainHandStack();
         maxLineHeight = Math.max(maxLineHeight, this.fontRenderer.getWidth(I18n.translate(mainHandItem.getTranslationKey())));
