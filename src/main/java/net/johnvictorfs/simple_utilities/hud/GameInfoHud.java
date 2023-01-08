@@ -71,7 +71,7 @@ public class GameInfoHud {
         // Draw lines of Array of Game info in the screen
         List<String> gameInfo = getGameInfo();
 
-        if (config.statusElements.toggleEquipmentStatus && !(this.client.currentScreen instanceof ChatScreen)) {
+        if (config.uiConfig.toggleEquipmentStatus && !(this.client.currentScreen instanceof ChatScreen)) {
             drawEquipmentInfo();
         }
 
@@ -79,9 +79,9 @@ public class GameInfoHud {
         int screenHeight = this.client.getWindow().getScaledHeight();
         int screenWidth = this.client.getWindow().getScaledWidth();
         int YScreenPosition = (screenHeight - ((lineHeight + 4) * gameInfo.size())) + (lineHeight + 4);
-        int XScreenPosition = screenWidth - 8;
-        int configYPosition = config.uiConfig.Ycords;
-        int configXPosition = config.uiConfig.Xcords;
+        int XScreenPosition = screenWidth - 8; // To correct padding
+        int configYPosition = config.statusElements.Ycords;
+        int configXPosition = config.statusElements.Xcords;
         int yAxis = YScreenPosition * configYPosition / 100;
         int xAxis = XScreenPosition * configXPosition / 100;
 
@@ -92,14 +92,15 @@ public class GameInfoHud {
             xAxis = screenWidth - 4;
         }
 
-        boolean rightToLeft = configXPosition < 50;
+        // TODO resolve the fact this shit dont work
+        boolean rightToLeft = configXPosition >= 50;
 
         for (String line : gameInfo) {
             this.fontRenderer.drawWithShadow(this.matrixStack, line, xAxis, yAxis + 4, config.uiConfig.textColor, rightToLeft);
             yAxis += lineHeight;
         }
 
-        if (config.statusElements.toggleSprintStatus && (this.client.options.sprintKey.isPressed() || this.player.isSprinting())) {
+        if (config.uiConfig.toggleSprintStatus && (this.client.options.sprintKey.isPressed() || this.player.isSprinting())) {
             this.drawSprintingInfo();
         }
     }
@@ -107,6 +108,7 @@ public class GameInfoHud {
     private void drawSprintingInfo() {
         final String sprintingText = (Text.translatable("text.hud.simple_utilities.sprinting")).getString();
 
+        SimpleUtilitiesConfig.StatusLocation statusLocation = config.uiConfig.sprintStatusLocation;
         int maxLineHeight = Math.max(10, this.fontRenderer.getWidth(sprintingText));
         maxLineHeight = (int) (Math.ceil(maxLineHeight / 5.0D + 0.5D) * 5);
         int scaleHeight = this.client.getWindow().getScaledHeight();
@@ -330,31 +332,24 @@ public class GameInfoHud {
             }
         }
 
-        // Additions
-
         if (config.statusElements.togglePlayerName) {
             gameInfo.add(player.getEntityName());
         }
 
-        if (config.statusElements.toggleServerName) {
-            String serverName = "Singleplayer";
-            try {
-                serverName = client.getCurrentServerEntry().name;
-            } catch (Exception e) {
-
+        // Just Don't Create a Text Line if there is no Info
+        if (client.getCurrentServerEntry() != null) {
+            if (config.statusElements.toggleServerName) {
+                String serverName = client.getCurrentServerEntry().name;
+                gameInfo.add(serverName);
             }
-            gameInfo.add(serverName);
+
+            if (config.statusElements.toggleServerAddress) {
+                String serverIp = client.getCurrentServerEntry().address;
+                gameInfo.add(serverIp);
+            }
         }
 
-        if (config.statusElements.toggleServerAddress) {
-            String serverIp = "N/A";
-            try {
-                serverIp = client.getCurrentServerEntry().address;
-            } catch (Exception e) {
 
-            }
-            gameInfo.add(serverIp);
-        }
 
         return gameInfo;
     }
