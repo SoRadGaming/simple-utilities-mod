@@ -7,14 +7,6 @@ import net.johnvictorfs.simple_utilities.helpers.Colors;
 
 @Config(name = "simple_utilities")
 public class SimpleUtilitiesConfig implements ConfigData {
-
-    public enum StatusLocation {
-        BOTTOM_LEFT,
-        BOTTOM_RIGHT,
-        TOP_LEFT,
-        TOP_RIGHT
-    }
-
     public static class StatusElements {
         @ConfigEntry.Gui.Tooltip
         @ConfigEntry.BoundedDiscrete(min = 0, max = 100)
@@ -52,13 +44,19 @@ public class SimpleUtilitiesConfig implements ConfigData {
         @ConfigEntry.Gui.Tooltip
         public boolean toggleEquipmentStatus = false;
         @ConfigEntry.Gui.Tooltip
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        public StatusLocation equipmentLocation = StatusLocation.BOTTOM_LEFT;
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 100)
+        public int equipmentStatusLocationX = 0;
+        @ConfigEntry.Gui.Tooltip
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 100)
+        public int equipmentStatusLocationY = 50;
         @ConfigEntry.Gui.Tooltip
         public boolean toggleSprintStatus = false;
         @ConfigEntry.Gui.Tooltip
-        @ConfigEntry.Gui.EnumHandler(option = ConfigEntry.Gui.EnumHandler.EnumDisplayOption.BUTTON)
-        public StatusLocation sprintStatusLocation = StatusLocation.BOTTOM_LEFT;
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 100)
+        public int sprintStatusLocationX = 0;
+        @ConfigEntry.Gui.Tooltip
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 100)
+        public int sprintStatusLocationY = 90;
         @ConfigEntry.Gui.Tooltip
         @ConfigEntry.ColorPicker
         public int textColor = Colors.white;
