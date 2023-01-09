@@ -184,72 +184,55 @@ public class GameInfoHud {
         }
     }
 
-    private static class EquipmentInfoStack {
-        public ItemStack item;
-        public int color;
-        public String text;
-
-        public EquipmentInfoStack(ItemStack item) {
-            this.item = item;
-        }
-
-        public void setColor(int color) {
-            this.color = color;
-        }
-
-        public void setText(String text) {
-            this.text = text;
-        }
-    }
-
     private void drawEquipmentInfo() {
         // Get Items from Inventory
-        List<ItemStack> equippedItems = new ArrayList<>(Arrays.asList(this.player.getInventory().getArmorStack(3), this.player.getInventory().getArmorStack(2), this.player.getInventory().getArmorStack(1), this.player.getInventory().getArmorStack(0), this.player.getOffHandStack(), this.player.getMainHandStack()));
+        List<EquipmentInfoStack> equipmentInfo = new ArrayList<>(
+                Arrays.asList(
+                        new EquipmentInfoStack(this.player.getInventory().getArmorStack(3)),
+                        new EquipmentInfoStack(this.player.getInventory().getArmorStack(2)),
+                        new EquipmentInfoStack(this.player.getInventory().getArmorStack(1)),
+                        new EquipmentInfoStack(this.player.getInventory().getArmorStack(0)),
+                        new EquipmentInfoStack(this.player.getOffHandStack()),
+                        new EquipmentInfoStack(this.player.getMainHandStack())
+                )
+        );
 
-        List<EquipmentInfoStack> equipmentInfo = new ArrayList<>();
-        List<Integer> color = new ArrayList<>();
-        List<String> output = new ArrayList<>();
-
-        ArrayList<String, > itemNames = new ArrayList<>();
+        // Remove Air Blocks from the list
+        equipmentInfo.removeIf(equipment -> equipment.getItem().getItem().equals(Blocks.AIR.asItem()));
 
         // Get each Items String and Color
-        for (ItemStack item : equippedItems) {
-            if (item.getItem().equals(Blocks.AIR.asItem())) {
-                // Skip empty slots
-                color.add(0);
-                output.add("");
-                continue;
-            }
+        for (EquipmentInfoStack index : equipmentInfo) {
+            ItemStack item = index.getItem();
 
             if (item.getMaxDamage() != 0) {
                 int currentDurability = item.getMaxDamage() - item.getDamage();
 
                 // Draw Durability
-                output.add(String.format("%s/%s", currentDurability, item.getMaxDamage()));
+                index.setText(String.format("%s/%s", currentDurability, item.getMaxDamage()));
 
                 // Default Durability Color
                 if (currentDurability <= (item.getMaxDamage()) / 4) {
-                    color.add(Colors.lightRed);
+                    index.setColor(Colors.lightRed);
                 } else if (currentDurability <= (item.getMaxDamage() / 2.5)) {
-                    color.add(Colors.lightOrange);
+                    index.setColor(Colors.lightOrange);
                 } else if (currentDurability <= (item.getMaxDamage() / 1.5)) {
-                    color.add(Colors.lightYellow);
+                    index.setColor(Colors.lightYellow);
                 } else if (currentDurability < item.getMaxDamage()) {
-                    // Start as Green if item has lost at least 1 durability
-                    color.add(Colors.lightGreen);
+                    index.setColor(Colors.lightGreen);
                 } else {
-                    color.add(config.uiConfig.textColor);
+                    index.setColor(config.uiConfig.textColor);
                 }
             } else {
                 // Draw Count
-                output.add((item.getCount() + " (" + this.player.getInventory().count(item.getItem()) + ")"));
+                index.setText((item.getCount() + " (" + this.player.getInventory().count(item.getItem()) + ")"));
             }
         }
 
         // Get the longest string in the array
         int longestString = 0;
         int BoxWidth = 0;
-        for (String s : output) {
+        for (EquipmentInfoStack index : equipmentInfo) {
+            String s = index.getText();
             if (s.length() > longestString) {
                 longestString = s.length();
                 BoxWidth = this.fontRenderer.getWidth(s);
@@ -258,27 +241,35 @@ public class GameInfoHud {
 
         // Screen Size Calculations
         int configX = config.uiConfig.equipmentLocationX;
-        int configY = config.uiConfig.equipmentLocationY;
         int lineHeight = this.fontRenderer.fontHeight + 6;
-        int yAxis = (((this.client.getWindow().getScaledHeight()) - ((lineHeight + 4) * output.size())) + (lineHeight + 4)) * (configY) / 100;
-        int xAxis = (((this.client.getWindow().getScaledWidth() - 4) - 4) - (BoxWidth)) * configX / 100;
+        int yAxis = (((this.client.getWindow().getScaledHeight()) - ((lineHeight) * equipmentInfo.size())) - 18) * (config.uiConfig.equipmentLocationY) / 100;
+        int xAxis = ((this.client.getWindow().getScaledWidth() - 8) - (BoxWidth + 20)) * configX / 100;
 
         // Add Padding to left of the screen
         if (xAxis <= 4) {
             xAxis = 4;
         }
 
-        // Draw All Items on Screen
-        for (int i = 0; i <= equippedItems.size(); i++) {
-            ItemStack item = equippedItems.get(i);
-            if (item.getItem().equals(Blocks.AIR.asItem())) {
-                // Skip empty slots
-                continue;
-            }
+        // Add Padding to top of the screen
+        if (yAxis <= 4) {
+            yAxis = 4;
+        }
 
-            this.itemRenderer.renderInGuiWithOverrides(item, xAxis, yAxis);
-            this.fontRenderer.drawWithShadow(this.matrixStack, output.get(i), xAxis + 64, yAxis, color.get(i));
-            yAxis += 12;
+        // Draw All Items on Screen
+        for (EquipmentInfoStack index : equipmentInfo) {
+            ItemStack item = index.getItem();
+
+            if (configX >= 50) {
+                int lineLength = this.fontRenderer.getWidth(index.getText());
+                int offset = (BoxWidth - lineLength);
+
+                this.fontRenderer.drawWithShadow(this.matrixStack, index.getText(), xAxis + offset, yAxis, index.getColor());
+                this.itemRenderer.renderInGuiWithOverrides(item, xAxis + BoxWidth + 4, yAxis - 5);
+            } else {
+                this.itemRenderer.renderInGuiWithOverrides(item, xAxis, yAxis - 5);
+                this.fontRenderer.drawWithShadow(this.matrixStack, index.getText(), xAxis + 20, yAxis, index.getColor());
+            }
+            yAxis += 18;
         }
     }
 
@@ -393,5 +384,37 @@ public class GameInfoHud {
 
 
         return gameInfo;
+    }
+
+    private static class EquipmentInfoStack {
+        private final ItemStack item;
+        private int color;
+        private String text;
+
+        public EquipmentInfoStack(ItemStack item) {
+            this.item = item;
+            this.text = "";
+            this.color = 0x00E0E0E0;
+        }
+
+        public void setColor(int color) {
+            this.color = color;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
+
+        public ItemStack getItem() {
+            return item;
+        }
+
+        public int getColor() {
+            return color;
+        }
+
+        public String getText() {
+            return text;
+        }
     }
 }

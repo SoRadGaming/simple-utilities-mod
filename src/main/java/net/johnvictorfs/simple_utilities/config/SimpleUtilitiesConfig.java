@@ -48,7 +48,7 @@ public class SimpleUtilitiesConfig implements ConfigData {
         public int equipmentLocationX = 0;
         @ConfigEntry.Gui.Tooltip
         @ConfigEntry.BoundedDiscrete(min = 0, max = 100)
-        public int equipmentLocationY = 50;
+        public int equipmentLocationY = 60;
         @ConfigEntry.Gui.Tooltip
         public boolean toggleSprintStatus = false;
         @ConfigEntry.Gui.Tooltip
