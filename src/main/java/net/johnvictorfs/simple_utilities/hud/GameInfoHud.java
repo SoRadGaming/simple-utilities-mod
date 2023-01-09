@@ -184,95 +184,101 @@ public class GameInfoHud {
         }
     }
 
+    private static class EquipmentInfoStack {
+        public ItemStack item;
+        public int color;
+        public String text;
+
+        public EquipmentInfoStack(ItemStack item) {
+            this.item = item;
+        }
+
+        public void setColor(int color) {
+            this.color = color;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
+    }
+
     private void drawEquipmentInfo() {
-        List<ItemStack> equippedItems = new ArrayList<>();
-        PlayerInventory inventory = this.player.getInventory();
-        int maxLineHeight = Math.max(10, this.fontRenderer.getWidth(""));
+        // Get Items from Inventory
+        List<ItemStack> equippedItems = new ArrayList<>(Arrays.asList(this.player.getInventory().getArmorStack(3), this.player.getInventory().getArmorStack(2), this.player.getInventory().getArmorStack(1), this.player.getInventory().getArmorStack(0), this.player.getOffHandStack(), this.player.getMainHandStack()));
 
-//        int lineHeight = this.fontRenderer.fontHeight + 2;
-//        int screenHeight = this.client.getWindow().getScaledHeight();
-//        int screenWidth = this.client.getWindow().getScaledWidth();
-//        int YScreenPosition = (screenHeight - lineHeight) - 4;
-//        int XScreenPosition = (screenWidth - this.fontRenderer.getWidth(sprintingText)) - 8;
-//        int configYPosition = config.uiConfig.sprintStatusLocationY;
-//        int configXPosition = config.uiConfig.sprintStatusLocationX;
-//        int yAxis = (YScreenPosition * configYPosition / 100) + 4;
-//        int xAxis = XScreenPosition * configXPosition / 100;
-//
-//        // Add Padding to left and right of the screen
-//        if (xAxis <= 4) {
-//            xAxis = 4;
-//        } else if (xAxis >= screenWidth - 4) {
-//            xAxis = screenWidth - 4;
-//        }
+        List<EquipmentInfoStack> equipmentInfo = new ArrayList<>();
+        List<Integer> color = new ArrayList<>();
+        List<String> output = new ArrayList<>();
 
-        ItemStack mainHandItem = inventory.getMainHandStack();
-        maxLineHeight = Math.max(maxLineHeight, this.fontRenderer.getWidth(I18n.translate(mainHandItem.getTranslationKey())));
-        equippedItems.add(mainHandItem);
+        ArrayList<String, > itemNames = new ArrayList<>();
 
-        for (ItemStack secondHandItem : inventory.offHand) {
-            maxLineHeight = Math.max(maxLineHeight, this.fontRenderer.getWidth(I18n.translate(secondHandItem.getTranslationKey())));
-            equippedItems.add(secondHandItem);
+        // Get each Items String and Color
+        for (ItemStack item : equippedItems) {
+            if (item.getItem().equals(Blocks.AIR.asItem())) {
+                // Skip empty slots
+                color.add(0);
+                output.add("");
+                continue;
+            }
+
+            if (item.getMaxDamage() != 0) {
+                int currentDurability = item.getMaxDamage() - item.getDamage();
+
+                // Draw Durability
+                output.add(String.format("%s/%s", currentDurability, item.getMaxDamage()));
+
+                // Default Durability Color
+                if (currentDurability <= (item.getMaxDamage()) / 4) {
+                    color.add(Colors.lightRed);
+                } else if (currentDurability <= (item.getMaxDamage() / 2.5)) {
+                    color.add(Colors.lightOrange);
+                } else if (currentDurability <= (item.getMaxDamage() / 1.5)) {
+                    color.add(Colors.lightYellow);
+                } else if (currentDurability < item.getMaxDamage()) {
+                    // Start as Green if item has lost at least 1 durability
+                    color.add(Colors.lightGreen);
+                } else {
+                    color.add(config.uiConfig.textColor);
+                }
+            } else {
+                // Draw Count
+                output.add((item.getCount() + " (" + this.player.getInventory().count(item.getItem()) + ")"));
+            }
         }
 
-        for (ItemStack armourItem : this.player.getInventory().armor) {
-            maxLineHeight = Math.max(maxLineHeight, this.fontRenderer.getWidth(I18n.translate(armourItem.getTranslationKey())));
-            equippedItems.add(armourItem);
+        // Get the longest string in the array
+        int longestString = 0;
+        int BoxWidth = 0;
+        for (String s : output) {
+            if (s.length() > longestString) {
+                longestString = s.length();
+                BoxWidth = this.fontRenderer.getWidth(s);
+            }
         }
 
-        maxLineHeight = (int) (Math.ceil(maxLineHeight / 5.0D + 0.5D) * 5);
-        int itemTop = this.client.getWindow().getScaledHeight() - maxLineHeight;
-
-        int lineHeight = this.fontRenderer.fontHeight + 6;
+        // Screen Size Calculations
         int configX = config.uiConfig.equipmentLocationX;
         int configY = config.uiConfig.equipmentLocationY;
+        int lineHeight = this.fontRenderer.fontHeight + 6;
+        int yAxis = (((this.client.getWindow().getScaledHeight()) - ((lineHeight + 4) * output.size())) + (lineHeight + 4)) * (configY) / 100;
+        int xAxis = (((this.client.getWindow().getScaledWidth() - 4) - 4) - (BoxWidth)) * configX / 100;
 
-        // Draw in order Helmet -> Chestplate -> Leggings -> Boots
-        for (ItemStack equippedItem : Lists.reverse(equippedItems)) {
-            if (equippedItem.getItem().equals(Blocks.AIR.asItem())) {
+        // Add Padding to left of the screen
+        if (xAxis <= 4) {
+            xAxis = 4;
+        }
+
+        // Draw All Items on Screen
+        for (int i = 0; i <= equippedItems.size(); i++) {
+            ItemStack item = equippedItems.get(i);
+            if (item.getItem().equals(Blocks.AIR.asItem())) {
                 // Skip empty slots
                 continue;
             }
 
-            // Icon Render?
-            this.itemRenderer.renderInGuiWithOverrides(equippedItem, 2, itemTop - 68);
-
-            if (equippedItem.getMaxDamage() != 0) {
-                int currentDurability = equippedItem.getMaxDamage() - equippedItem.getDamage();
-
-                String itemDurability = currentDurability + "/" + equippedItem.getMaxDamage();
-
-                // Default Durability Color
-                int color = config.uiConfig.textColor;
-
-                if (currentDurability < equippedItem.getMaxDamage()) {
-                    // Start as Green if item has lost at least 1 durability
-                    color = Colors.lightGreen;
-                }
-                if (currentDurability <= (equippedItem.getMaxDamage() / 1.5)) {
-                    color = Colors.lightYellow;
-                }
-                if (currentDurability <= (equippedItem.getMaxDamage() / 2.5)) {
-                    color = Colors.lightOrange;
-                }
-                if (currentDurability <= (equippedItem.getMaxDamage()) / 4) {
-                    color = Colors.lightRed;
-                }
-
-                // Draw Durability
-                this.fontRenderer.drawWithShadow(this.matrixStack, itemDurability, 22, itemTop - 64, color);
-            } else {
-                int inventoryCount = inventory.count(equippedItem.getItem());
-                int count = equippedItem.getCount();
-
-                // Icon
-                if (inventoryCount > 1) {
-                    String itemCount = count + " (" + inventoryCount + ")";
-                    this.fontRenderer.drawWithShadow(this.matrixStack, itemCount, 22, itemTop - 64, config.uiConfig.textColor);
-                }
-            }
-
-            itemTop += lineHeight;
+            this.itemRenderer.renderInGuiWithOverrides(item, xAxis, yAxis);
+            this.fontRenderer.drawWithShadow(this.matrixStack, output.get(i), xAxis + 64, yAxis, color.get(i));
+            yAxis += 12;
         }
     }
 
