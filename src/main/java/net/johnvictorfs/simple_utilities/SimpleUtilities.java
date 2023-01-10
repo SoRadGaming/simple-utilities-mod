@@ -31,7 +31,7 @@ public class SimpleUtilities implements ClientModInitializer {
     void registerKeybindings() {
         KeyBinding toggleHudKey = new KeyBinding(
                 "key.simple_utilities.toggle_hud",
-                GLFW.GLFW_KEY_K,
+                GLFW.GLFW_KEY_GRAVE_ACCENT,
                 "key.category.simple_utilities.hud"
         );
 
