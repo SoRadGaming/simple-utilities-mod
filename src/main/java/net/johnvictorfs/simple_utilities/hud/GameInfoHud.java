@@ -241,8 +241,8 @@ public class GameInfoHud {
 
         // Screen Size Calculations
         int configX = config.uiConfig.equipmentLocationX;
-        int lineHeight = this.fontRenderer.fontHeight + 6;
-        int yAxis = (((this.client.getWindow().getScaledHeight()) - ((lineHeight) * equipmentInfo.size())) - 18) * (config.uiConfig.equipmentLocationY) / 100;
+        int lineHeight = this.fontRenderer.fontHeight + 8;
+        int yAxis = (this.client.getWindow().getScaledHeight() - (lineHeight * equipmentInfo.size())) * (config.uiConfig.equipmentLocationY) / 100;
         int xAxis = ((this.client.getWindow().getScaledWidth() - 8) - (BoxWidth + 20)) * configX / 100;
 
         // Add Padding to left of the screen
@@ -269,7 +269,7 @@ public class GameInfoHud {
                 this.itemRenderer.renderInGuiWithOverrides(item, xAxis, yAxis - 5);
                 this.fontRenderer.drawWithShadow(this.matrixStack, index.getText(), xAxis + 20, yAxis, index.getColor());
             }
-            yAxis += 18;
+            yAxis += lineHeight;
         }
     }
 
