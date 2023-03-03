@@ -1,4 +1,4 @@
-# Simple Utilities Mod (Minecraft 1.19.3)
+# Simple Utilities Mod FORK (Minecraft 1.19.3)
 
 This is an unofficial Fork due to the original creator no longer respondiong to PR or New features.
 
@@ -8,8 +8,20 @@ A Minecraft Mod that enhances the Game's HUD with some simple utilities like the
     - Light Status
     - Fixed Location Bugs
     - New Settings System
-    - Configurable Hud
     - Upgradeable Feature Set
+    - Added New Config Catagories
+    - Added Tooltips
+    - Added new Config to Adjust the location of the UI
+    - Improved Some Error Handling (Null Catch blocks)
+    - Fixed Hud Right Side Alignment
+    - Added Slider Config to Sprinting
+    - Added Slider for Armour Hud
+    - Translated Language Files
+    - Full Armour System ReWrite Completed
+    - Updated Default Values for Configs (to simplify Hud on first install)
+    - Changed Default Keybind from k -> `, to resolve keybind conflict with Iris Shaders.
+    - Updated internal cloth config fabric API from 7.0.65 to version 9.0.94
+
 
 
 - **Original HUD Features:**
