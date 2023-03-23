@@ -35,12 +35,12 @@
     "simple_utilities.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.14.11",
+    "fabricloader": ">=0.14.18",
     "fabric": "*",
-    "minecraft": ">=1.19.3"
+    "minecraft": ">=1.19.4"
   },
   "suggests": {
-    "modmenu": ">=5.0.0"
+    "modmenu": ">=6.1.0-rc.4"
   },
   "custom": {
     "modmanager": {

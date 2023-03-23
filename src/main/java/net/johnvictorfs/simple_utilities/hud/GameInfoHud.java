@@ -262,9 +262,9 @@ public class GameInfoHud {
                 int offset = (BoxWidth - lineLength);
 
                 this.fontRenderer.drawWithShadow(this.matrixStack, index.getText(), xAxis + offset + 2, yAxis, index.getColor());
-                this.itemRenderer.renderInGuiWithOverrides(item, xAxis + BoxWidth + 6, yAxis - 5);
+                this.itemRenderer.renderInGuiWithOverrides(this.matrixStack, item, xAxis + BoxWidth + 6, yAxis - 5);
             } else {
-                this.itemRenderer.renderInGuiWithOverrides(item, xAxis, yAxis - 5);
+                this.itemRenderer.renderInGuiWithOverrides(this.matrixStack, item, xAxis, yAxis - 5);
                 this.fontRenderer.drawWithShadow(this.matrixStack, index.getText(), xAxis + 20, yAxis, index.getColor());
             }
             yAxis += lineHeight;
